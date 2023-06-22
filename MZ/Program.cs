@@ -1,5 +1,5 @@
-﻿using System;
-using System.Media;
+﻿using System.Media;
+using System.Runtime.InteropServices;
 using MZ.Properties;
 
 class GameProgram
@@ -8,8 +8,16 @@ class GameProgram
     private static SoundPlayer bg = new SoundPlayer(Resources.bg);
     private static SoundPlayer bg2 = new SoundPlayer(Resources.bg2);
     private static SoundPlayer bg3 = new SoundPlayer(Resources.bg3);
+
+    [DllImport("kernel32.dll", ExactSpelling = true)]
+    private static extern IntPtr GetConsoleWindow();
+
+    [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
     static void Main()
     {
+        ShowWindow(GetConsoleWindow(), 3);
         Console.Title = "Maze";
         Menu();
     }
