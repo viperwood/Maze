@@ -9,15 +9,50 @@ class GameProgram
     private static SoundPlayer bg2 = new SoundPlayer(Resources.bg2);
     private static SoundPlayer bg3 = new SoundPlayer(Resources.bg3);
 
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    public struct FontInfo
+    {
+        internal int cbSize;
+        internal int FontIndex;
+        internal short FontWidth;
+        public short FontSize;
+        public int FontFamily;
+        public int FontWeight;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+        public string FontName;
+    }
+
     [DllImport("kernel32.dll", ExactSpelling = true)]
     private static extern IntPtr GetConsoleWindow();
 
     [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
+    [DllImport("kernel32.dll", SetLastError = true)]
+    static extern IntPtr GetStdHandle(int nStdHandle);
+
+    [return: MarshalAs(UnmanagedType.Bool)]
+    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    internal static extern bool SetCurrentConsoleFontEx(IntPtr hConsoleOutput, bool MaximumWindow, ref FontInfo ConsoleCurrentFontEx);
+
+    static void SetCurrentFont(short fontSize = 26)
+    {
+        FontInfo set = new FontInfo
+        {
+            cbSize = Marshal.SizeOf<FontInfo>(),
+            FontIndex = 0,
+            FontFamily = 54,
+            FontName = "Consolas",
+            FontWeight = 400,
+            FontSize = fontSize
+        };
+        SetCurrentConsoleFontEx(GetStdHandle(-11), false, ref set);
+    }
+
     static void Main()
     {
         ShowWindow(GetConsoleWindow(), 3);
+        SetCurrentFont();
         Console.Title = "Maze";
         Menu();
     }
