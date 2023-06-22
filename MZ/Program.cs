@@ -235,7 +235,7 @@ class GameProgram
                     kolon--;
                     Chas[strok, kolon] = 7;
                 }
-                else if (kolon - 1 > 0 && (Chas[strok, kolon - 1] == 2)) { kristal++; Console.Clear(); bg3.Stop(); Game(); }
+                else if (kolon - 1 > 0 && (Chas[strok, kolon - 1] == 2)) { Console.Clear(); Console.WriteLine("Вы нашли кристал и вернулись в город дабы продать его и приобрести билет."); Console.ReadKey(true); kristal++; Console.Clear(); bg3.Stop(); Game(); }
             }
             if (napr == 2)
             {
@@ -246,7 +246,7 @@ class GameProgram
                     kolon++;
                     Chas[strok, kolon] = 7;
                 }
-                else if (kolon + 1 < 20 && (Chas[strok, kolon + 1] == 2)) { kristal++; Console.Clear(); bg3.Stop(); Game(); }
+                else if (kolon + 1 < 20 && (Chas[strok, kolon + 1] == 2)) { Console.Clear(); Console.WriteLine("Вы нашли кристал и вернулись в город дабы продать его и приобрести билет."); Console.ReadKey(true); kristal++; Console.Clear(); bg3.Stop(); Game(); }
             }
             if (napr == 3)
             {
@@ -257,7 +257,7 @@ class GameProgram
                     strok--;
                     Chas[strok, kolon] = 7;
                 }
-                else if (strok - 1 > 0 && (Chas[strok - 1, kolon] == 2)) { kristal++; Console.Clear(); bg3.Stop(); Game(); }
+                else if (strok - 1 > 0 && (Chas[strok - 1, kolon] == 2)) { Console.Clear(); Console.WriteLine("Вы нашли кристал и вернулись в город дабы продать его и приобрести билет."); Console.ReadKey(true); kristal++; Console.Clear(); bg3.Stop(); Game(); }
             }
             if (napr == 4)
             {
@@ -268,7 +268,7 @@ class GameProgram
                     strok++;
                     Chas[strok, kolon] = 7;
                 }
-                else if (strok + 1 < 30 && (Chas[strok + 1, kolon] == 2)) { kristal++; Console.Clear(); bg3.Stop(); Game(); }
+                else if (strok + 1 < 30 && (Chas[strok + 1, kolon] == 2)) { Console.Clear(); Console.WriteLine("Вы нашли кристал и вернулись в город дабы продать его и приобрести билет."); Console.ReadKey(true); kristal++; Console.Clear(); bg3.Stop(); Game(); }
             }
             if (kolon < 11 && strok < 11)
             {
@@ -991,7 +991,7 @@ class GameProgram
                         else if (vibor == 1 && kristal < 1)
                         {
                             Console.SetCursorPosition(0, 12);
-                            Console.WriteLine("Недостаточно средств!"); Console.ReadKey(true);
+                            Console.WriteLine("Недостаточно кристалов!"); Console.ReadKey(true);
                             Ex = true;
                         }
                         else if (vibor == 2) { Ex = true; }
