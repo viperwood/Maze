@@ -5,6 +5,7 @@ using MZ.Properties;
 class GameProgram
 {
     private static int kristal = 0;
+    private static int histori = 0;
     private static SoundPlayer bg = new SoundPlayer(Resources.bg);
     private static SoundPlayer bg2 = new SoundPlayer(Resources.bg2);
     private static SoundPlayer bg3 = new SoundPlayer(Resources.bg3);
@@ -60,6 +61,15 @@ class GameProgram
     {
         Console.Clear();
         Console.CursorVisible = false;
+        if (histori == 3)
+        {
+            Console.WriteLine("Вы спустились в часть лабиринта с вводам пароля, необходимо подобрать пароль наступая на нажемные пластины," +
+                "если вы нажмете неправильную пластину, вас выкенет в самую первую комнату, а пароль сбросится и предется вводить все с самого начала.\r\n" +
+                "\r\nНажмите Enter чтобы продолжить...");
+            Console.ReadKey(true);
+            Console.Clear();
+            histori++;
+        }
         int napr = 0, strok = 5, kolon = 5, temp = 0, kartax=11, kartay = 11, schet = 1;
         bool exit = false, rest = false, proh = false;
         int[] password = { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
@@ -235,7 +245,14 @@ class GameProgram
                     kolon--;
                     Chas[strok, kolon] = 7;
                 }
-                else if (kolon - 1 > 0 && (Chas[strok, kolon - 1] == 2)) { Console.Clear(); Console.WriteLine("Вы нашли кристал и вернулись в город дабы продать его и приобрести билет."); Console.ReadKey(true); kristal++; Console.Clear(); bg3.Stop(); Game(); }
+                else if (kolon - 1 > 0 && (Chas[strok, kolon - 1] == 2)) { Console.Clear(); Console.WriteLine("Вы нашли кристал и вернулись в город дабы продать его и приобрести билет.\r\n" +
+                "\r\nНажмите Enter чтобы продолжить..."); 
+                    Console.ReadKey(true);
+                    kristal++;
+                    Console.Clear();
+                    bg3.Stop();
+                    Game();
+                }
             }
             if (napr == 2)
             {
@@ -246,7 +263,14 @@ class GameProgram
                     kolon++;
                     Chas[strok, kolon] = 7;
                 }
-                else if (kolon + 1 < 20 && (Chas[strok, kolon + 1] == 2)) { Console.Clear(); Console.WriteLine("Вы нашли кристал и вернулись в город дабы продать его и приобрести билет."); Console.ReadKey(true); kristal++; Console.Clear(); bg3.Stop(); Game(); }
+                else if (kolon + 1 < 20 && (Chas[strok, kolon + 1] == 2)) { Console.Clear(); Console.WriteLine("Вы нашли кристал и вернулись в город дабы продать его и приобрести билет.\r\n" +
+                "\r\nНажмите Enter чтобы продолжить...");
+                    Console.ReadKey(true);
+                    kristal++;
+                    Console.Clear();
+                    bg3.Stop();
+                    Game();
+                }
             }
             if (napr == 3)
             {
@@ -257,7 +281,14 @@ class GameProgram
                     strok--;
                     Chas[strok, kolon] = 7;
                 }
-                else if (strok - 1 > 0 && (Chas[strok - 1, kolon] == 2)) { Console.Clear(); Console.WriteLine("Вы нашли кристал и вернулись в город дабы продать его и приобрести билет."); Console.ReadKey(true); kristal++; Console.Clear(); bg3.Stop(); Game(); }
+                else if (strok - 1 > 0 && (Chas[strok - 1, kolon] == 2)) { Console.Clear(); Console.WriteLine("Вы нашли кристал и вернулись в город дабы продать его и приобрести билет.\r\n" +
+                "\r\nНажмите Enter чтобы продолжить...");
+                    Console.ReadKey(true);
+                    kristal++;
+                    Console.Clear();
+                    bg3.Stop();
+                    Game();
+                }
             }
             if (napr == 4)
             {
@@ -268,7 +299,14 @@ class GameProgram
                     strok++;
                     Chas[strok, kolon] = 7;
                 }
-                else if (strok + 1 < 30 && (Chas[strok + 1, kolon] == 2)) { Console.Clear(); Console.WriteLine("Вы нашли кристал и вернулись в город дабы продать его и приобрести билет."); Console.ReadKey(true); kristal++; Console.Clear(); bg3.Stop(); Game(); }
+                else if (strok + 1 < 30 && (Chas[strok + 1, kolon] == 2)) { Console.Clear(); Console.WriteLine("Вы нашли кристал и вернулись в город дабы продать его и приобрести билет.\r\n" +
+                "\r\nНажмите Enter чтобы продолжить...");
+                    Console.ReadKey(true);
+                    kristal++;
+                    Console.Clear();
+                    bg3.Stop();
+                    Game();
+                }
             }
             if (kolon < 11 && strok < 11)
             {
@@ -345,6 +383,15 @@ class GameProgram
     {
         bg3.PlayLooping();
         Console.Clear();
+        if (histori == 2)
+        {
+            Console.WriteLine("Вы попали в лабиринт, вам необходимо найти выход, ведь вход в лабиринт завалило как только вы в него зашли, поэтому пути назад нет,\r\n" +
+                "есть слух что в последней комнате всегда есть запасной выход. Идти вам уже некуда, так что вперед.\r\n" +
+                "\r\nНажмите Enter чтобы продолжить...");
+            Console.ReadKey(true);
+            Console.Clear();
+            histori++;
+        }
         Console.CursorVisible = false;
         int napr = 0, strok = 24, kolon = 1, temp = 0;
         bool exit = false;
@@ -468,7 +515,17 @@ class GameProgram
                     kolon--;
                     lab[strok, kolon] = 7;
                 }
-                else if (kolon - 1 >= 0 && lab[strok, kolon - 1] == 2) { Console.BackgroundColor = ConsoleColor.Blue; Console.ForegroundColor = ConsoleColor.Black; Console.SetCursorPosition(3 , 24); Console.WriteLine("Проход заволило, надо найти другой выход"); Console.ResetColor(); Console.ReadKey(true); Console.Clear(); }
+                else if (kolon - 1 >= 0 && lab[strok, kolon - 1] == 2) 
+                { 
+                    Console.BackgroundColor = ConsoleColor.Blue;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.SetCursorPosition(40, 24);
+                    Console.WriteLine("Проход заволило, надо найти другой выход");
+                    Console.ReadKey(true);
+                    Console.SetCursorPosition(40, 24);
+                    Console.ResetColor();
+                    Console.WriteLine("                                        ");
+                }
             }
             if (napr == 2)
             {
@@ -505,9 +562,22 @@ class GameProgram
     }
     static void Loka1()
     {
+        Console.CursorVisible = false;
         bg2.PlayLooping();
         Console.Clear();
-        Console.CursorVisible = false;
+        if (histori == 1)
+        {
+            Console.WriteLine("Выйдя из города вы попали на дорогу, она видет к лабиринту, однако она очень длинная и вам никак не успеть,\r\n" +
+                "по этому вам необходимо найти короткую дорогу, через горы (▲) и воду (~) передвигаться вы не можете.\r\n" +
+                "Проходя через лес есть большая вероятность встретить монстров и получить раны (♥), вы не безсмертны будьте внимательны.\r\n" +
+                "Вам необходимо попасть в безопасную зону (♦) до наступления ночи (колличество ходов снизу), так как ночью выходят очень опасные монстры\r\n" +
+                "и без сопровождения опытных авантюристов ночевать на открытой местности невкоем случае нельзя. Доберитесь до лабиринта, точки проходов отмечены (♦).\r\n" +
+                "Удачи в пути!\r\n" +
+                "\r\nНажмите Enter чтобы продолжить...");
+            Console.ReadKey(true);
+            Console.Clear();
+            histori++;
+        }
         bool exit = false;
         int napr = 0, strok = 5, kolon = 2, temp = 3, schet = 22, life = 5, chekx = 19;
         int[,] map =
@@ -741,8 +811,21 @@ class GameProgram
     }
     static void Game()
     {
-        bg.PlayLooping();
         Console.CursorVisible = false;
+        if (histori == 0)
+        {
+            Console.WriteLine("Вы находитесь в городе на которые в скором времени наподет армия девонов,\r\n" +
+                "дабы выжить необходимо уплыть на корабле, однако мест на корабле не хватает. Однако капитан корабля готов продать вам билет за 1000 монет.\r\n" +
+                "Такая сумма неподъемна для вас. Разачаровавшись, вы ушли в бар дабы хотябы выпить в свой последний раз.\r\n" +
+                "Усевшись за барную стойку рядом со старцем, вы завили с ним беседу и узнали, что на востоке есть неразграбленный лабиринт.\r\n" +
+                "Там по легендам находится давольно дорогой кристал и местный ювилир готов выкупить его у любого за 1000 монет.\r\n" +
+                "Услышав это вы собрались духом, поблагадарили старца и вышли на дорогу к выходу из города, да начнется ваше приключение.\r\n" +
+                "\r\nНажмите Enter чтобы продолжить...");
+            Console.ReadKey(true);
+            Console.Clear();
+            histori++;
+        }
+        bg.PlayLooping();
         bool exit = false, dialog = false, dialog1 = false;
         int napr = 0, strok = 7, kolon = 21, temp = 4, money = 250;
         int[,] town =
@@ -1006,30 +1089,27 @@ class GameProgram
     static void Rules() 
     {
         Console.Clear();
-        Console.WriteLine("Правила");
-        Console.WriteLine("Управление:");
-        Console.WriteLine("Передвижение на W, A, S, D или на стрелочки.");
-        Console.WriteLine("Что бы выбрать нужный ответ в диалогах нажмите Enter.");
-        Console.WriteLine("Предыстория:");
-        Console.WriteLine("Вы являетесь жителем городка на охваченном войной континенте и в скором времени на городок наподут демоны,");
-        Console.WriteLine("чтобы не стать для них пищей вы должны уплыть на корабле, однако вам не хватает денег на билет, да еще и капитан не может продать билет дешевле");
-        Console.WriteLine("так как корабль и так полон людьми, но благо рядом с кораблем есть ювилирная лавка где можно продать кристаллы.");
-        Console.WriteLine("Однако и кристаллов у вас нет. Совсем отчаявшись вы ушли в товерну выпить напоследок, там за кружкой пива вам ");
-        Console.WriteLine("рассказали про кристалл находящийся в лаберинте на востоке, однако чтобы попасть в лобиринт вам необходимо пройти");
-        Console.WriteLine("через очень опасный лес который кишит монстрами, до лабиринта конечно ведет дорога, но она очень длинная, а ночью из леса выходят еще более опасные монстры и без");
-        Console.WriteLine("опытного сопровождения наачевать на дороге не представляется возможным. Благо по пути есть деревушка в которой можно переночивать.");
-        Console.WriteLine("Мужчина так же рассказал что пройдя лабиринт вы встретите листему защиты кристалла,");
-        Console.WriteLine(" она представляет собой несколько комнат в которых нужно ввести пороль нажимая на плиты на полу. Правда если вы не правильно введете пороль, все пройденные комнаты закроются,");
-        Console.WriteLine("а вас вернет опять в начало. Именно по этой причине никто еще не забрал кристал.");
-        Console.WriteLine("Ну чтож вперед на поиски кристала дабы сохранить свою жизнь!");
-        Console.WriteLine();
-        Console.WriteLine("Что нужно делать:");
-        Console.WriteLine("На пред локации (город) вы можете погулять, поговорить с капитаном или зайти в ювилирную лавку, а потом пойдя напрво начать свое путишествие.");
-        Console.WriteLine("На первой локации (лес) вам необходимо пройти по точкам помеченными символом ♦ и попасть в лабиринт.");
-        Console.WriteLine("На второй локации вам необходимо пройти лабиринт записывая проход на свою карту.");
-        Console.WriteLine("На третей локации необходимо методом подбора найти правильный пороль, правильные пластины будут опускаться вниз и замирать, но если вы ошибетесь в воде, весь прогресс");
-        Console.WriteLine("комнат с паролем слетит и вам надо будет все начать занава.");
-        Console.WriteLine("После того как вы возьмете кристал вы переместитесь в город, а дальше вам необходимо продать кристал и купить билет на корабль.");
+        Console.WriteLine("Правила:\r\n" +
+            "Главное правило, не использовать бумагу и корондаш, другие средства записи.\r\n" +
+            "Второе правило, веселитесь!\r\n" +
+            "\r\nУправление:\r\n" +
+            "Передвижение на W, A, S, D или на стрелочки.\r\n" +
+            "Что бы выбрать нужный ответ в диалогах нажмите Enter.\r\n" +
+            "\r\nПредыстория:\r\n" +
+            "Вы являетесь жителем городка на охваченном войной континенте и в скором времени на городок нападут демоны,\r\n" +
+            "чтобы не стать для них пищей, вы должны уплыть на корабле, однако, вам не хватает денег на билет, да еще и капитан не может продать билет дешевле\r\n" +
+            "так как корабль и так полон людьми, но благо рядом с кораблем есть ювилирная лавка, где можно продать кристаллы.\r\n" +
+            "Однако, и кристаллов у вас нет. Совсем отчаявшись, вы ушли в товерну выпить напоследок, там за кружкой пива вам\r\n" +
+            "рассказали про кристалл, находящийся в лаберинте на востоке, однако, чтобы попасть в лабиринт, вам необходимо пройти\r\n" +
+            "через очень опасный лес, который кишит монстрами, до лабиринта конечно ведет дорога,\r\n" +
+            "но она очень длинная, а ночью из леса выходят еще более опасные монстры. И без\r\n" +
+            "опытного сопровождения ночевать на дороге не представляется возможным. Благо по пути есть деревушка в которой можно переночевать.\r\n" +
+            "Мужчина так же рассказал, что пройдя лабиринт вы встретите систему защиты кристалла,\r\n" +
+            "она представляет собой несколько комнат, в которых нужно ввести пароль нажимая на плиты на полу.\r\n" +
+            "Правда, если вы не правильно введете пароль, все пройденные комнаты закроются,\r\n" +
+            "а вас вернет опять в начало. Именно по этой причине никто еще не забрал кристал.\r\n" +
+            "Ну чтож, вперед на поиски кристалла, дабы сохранить свою жизнь!\r\n" +
+            "\r\nНажмите Enter для выхода...");
         Console.ReadKey(true);
         Menu(); 
     }
