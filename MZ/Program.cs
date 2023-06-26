@@ -52,34 +52,20 @@ class GameProgram
         };
         SetCurrentConsoleFontEx(GetStdHandle(-11), false, ref set);
     }
-
     static void Main()
     {
         ShowWindow(GetConsoleWindow(), 3);
         SetCurrentFont();
         Console.Title = "Maze";
-        Loka3();
+        Menu();
     }
-
-    /// <summary>
-    /// Метод для вывода символа
-    /// </summary>
-    /// <param name="a">Выводимый символ</param>
-    /// <param name="bg">Цвет фона</param>
-    static void Ran(char a, ConsoleColor bg)
+    static void writeColor(char a, ConsoleColor bg)
     {
         Console.BackgroundColor = bg;
         Console.Write(a);
         Console.ResetColor();
     }
-
-    /// <summary>
-    /// Метод для вывода символа
-    /// </summary>
-    /// <param name="a">Выводимый символ</param>
-    /// <param name="fg">Цвет шрифта</param>
-    /// <param name="bg">Цвет фона</param>
-    static void Ran(char a, ConsoleColor fg, ConsoleColor bg)
+    static void writeColor(char a, ConsoleColor fg, ConsoleColor bg)
     {
         Console.BackgroundColor = bg;
         Console.ForegroundColor = fg;
@@ -100,44 +86,35 @@ class GameProgram
             Console.Clear();
             histori++;
         }
-        int strok = 5, kolon = 5, temp = 0, kartax=11, kartay = 11, counter = 0;
-        bool exit = false, rest = false, proh = false;
-
-
-
+        int strok = 5, kolon = 5, temp = 0, kartax=11, kartay = 11, counter = 0, index=0;
+        bool exit = false, rest = false;
         int[,] password = new int[,]
         {
+            { 3, 7 },
             { 5, 2 },
-            { 7, 3 },
             { 8, 5 },
             { 7, 7 },
-            { 5, 8 },
-            { 3, 7 },
-            { 2, 5 },
             { 3, 3 },
-
-            { 15, 2 },
-            { 17, 3 },
-            { 18, 5 },
-            { 17, 7 },
+            { 5, 8 },
+            { 2, 5 },
+            { 7, 3 },
             { 15, 8 },
+            { 15, 2 },
+            { 17, 7 },
+            { 13, 3 },
+            { 18, 5 },
             { 13, 7 },
             { 12, 5 },
-            { 13, 3 },
-
-            { 15, 12 },
+            { 17, 3 },
             { 17, 13 },
-            { 18, 15 },
-            { 17, 17 },
-            { 15, 18 },
             { 13, 17 },
-            { 12, 15 },
+            { 18, 15 },
             { 13, 13 },
+            { 15, 18 },
+            { 15, 12 },
+            { 12, 15 },
+            { 17, 17 },
         };
-
-
-
-
         int[] truepassword = { 7, 3, 5, 8, 1, 2, 6, 4 };
         int[,] caveStart =
         {
@@ -234,36 +211,25 @@ class GameProgram
                     switch (cave[o, i])
                     {
                         case 0:
-                            Ran(' ', ConsoleColor.Gray);
+                            writeColor(' ', ConsoleColor.Gray);
                             break;
                         case 1:
-                            Console.BackgroundColor = ConsoleColor.DarkGray;
-                            Console.Write(" ");
-                            Console.ResetColor();
+                            writeColor(' ', ConsoleColor.DarkGray);
                             break;
                         case 2:
-                            Ran('♦', ConsoleColor.Black, ConsoleColor.Magenta);
+                            writeColor('♦', ConsoleColor.Black, ConsoleColor.Magenta);
                             break;
                         case 8:
-                            Console.BackgroundColor = ConsoleColor.Blue;
-                            Console.Write(" ");
-                            Console.ResetColor();
+                            writeColor(' ', ConsoleColor.Blue);
                             break;
                         case 9:
-                            Console.BackgroundColor = ConsoleColor.Cyan;
-                            Console.Write(" ");
-                            Console.ResetColor();
+                            writeColor(' ', ConsoleColor.Cyan);
                             break;
                         case 7:
-                            Console.BackgroundColor = ConsoleColor.DarkYellow;
-                            Console.ForegroundColor = ConsoleColor.Black;
-                            Console.Write("☺");
-                            Console.ResetColor();
+                            writeColor('☺', ConsoleColor.Black, ConsoleColor.DarkYellow);
                             break;
                         case 6:
-                            Console.BackgroundColor = ConsoleColor.Black;
-                            Console.Write(" ");
-                            Console.ResetColor();
+                            writeColor(' ', ConsoleColor.Black);
                             break;
                     };
                 }
@@ -353,40 +319,43 @@ class GameProgram
                     }
                     break;
             }
-
-
-                bool contains = false;
-                for (int i = 0; i < password.GetUpperBound(0); i++)
+            bool contains = false;
+            for (int i = 0; i < password.GetUpperBound(0) + 1; i++)
+            {
+                if (password[i, 0] == kolon && password[i, 1] == strok )
                 {
-                    if (password[i, 0] == kolon && password[i, 1] == strok)
-                    {
-                        contains = true;
-                        break;
-                    }
+                    contains = true;
+                    index = i;
+                    break;
                 }
-
-                if (contains)
+            }
+            if (contains && index>=counter)
+            {
+                if (password[counter, 0] == kolon && password[counter, 1] == strok)
                 {
-                    if (password[counter, 0] == kolon && password[counter, 1] == strok && cave[kolon, strok] == 9)
-                    {
-                        counter++;
-                        temp = 8;
-                    }
-                    else
-                    {
-                        rest = true;
-                    }
+                    counter++;
+                    temp = 8;
                 }
-                if (counter >= 8)
+                else
                 {
-                    cave[10, 15] = 0;
-                    kartax = 21;
+                    rest = true;
                 }
-                else if (counter >= 16)
-                {
-                    cave[20, 15] = 0;
-                    kartay = 31;
-                }
+            }
+            if (counter == 8 && kolon != 10 && strok != 5)
+            {
+                cave[5, 10] = 0;
+                kartax = 21;
+            }
+            else if (counter == 16 && kolon != 15 && strok != 10)
+            {
+                cave[10, 15] = 0;
+                kartay = 21;
+            }
+            else if (counter == 24 && kolon != 15 && strok != 20)
+            {
+                cave[20, 15] = 0;
+                kartay = 31;
+            }
             Console.SetCursorPosition(0, 0);
         }
     }
@@ -467,29 +436,19 @@ class GameProgram
                                     {
                                         case 0:
                                             Console.SetCursorPosition(p + i, u + o);
-                                            Console.BackgroundColor = ConsoleColor.Gray;
-                                            Console.Write(" ");
-                                            Console.ResetColor();
+                                            writeColor(' ', ConsoleColor.Gray);
                                             break;
                                         case 2:
                                             Console.SetCursorPosition(p + i, u + o);
-                                            Console.BackgroundColor = ConsoleColor.Magenta;
-                                            Console.ForegroundColor = ConsoleColor.Black;
-                                            Console.Write("♦");
-                                            Console.ResetColor();
+                                            writeColor('♦', ConsoleColor.Black, ConsoleColor.Magenta);
                                             break;
                                         case 1:
                                             Console.SetCursorPosition(p + i, u + o);
-                                            Console.BackgroundColor = ConsoleColor.DarkGray;
-                                            Console.Write(" ");
-                                            Console.ResetColor();
+                                            writeColor(' ', ConsoleColor.DarkGray);
                                             break;
                                         case 7:
                                             Console.SetCursorPosition(p + i, u + o);
-                                            Console.BackgroundColor = ConsoleColor.DarkYellow;
-                                            Console.ForegroundColor = ConsoleColor.Black;
-                                            Console.Write("☺");
-                                            Console.ResetColor();
+                                            writeColor('☺', ConsoleColor.Black, ConsoleColor.DarkYellow);
                                             break;
                                     }
                                 }
@@ -601,61 +560,34 @@ class GameProgram
                     switch (map[y, x])
                         {
                         case 0:
-                            Console.BackgroundColor = ConsoleColor.Blue;
-                            Console.ForegroundColor = ConsoleColor.Black;
-                            Console.Write("~");
-                            Console.ResetColor();
+                            writeColor('~', ConsoleColor.Black, ConsoleColor.Blue);
                                 break;
                         case 2:
-                            Console.BackgroundColor = ConsoleColor.Magenta;
-                            Console.ForegroundColor = ConsoleColor.Black;
-                            Console.Write("♦");
-                            Console.ResetColor();
+                            writeColor('♦', ConsoleColor.Black, ConsoleColor.Magenta);
                                 break;
                         case 6:
-                            Console.BackgroundColor = ConsoleColor.Yellow;
-                            Console.ForegroundColor = ConsoleColor.Black;
-                            Console.Write("♦");
-                            Console.ResetColor();
+                            writeColor('♦', ConsoleColor.Black, ConsoleColor.Yellow);
                                 break;
                         case 9:
-                            Console.BackgroundColor = ConsoleColor.DarkGray;
-                            Console.ForegroundColor = ConsoleColor.Black;
-                            Console.Write("♦");
-                            Console.ResetColor();
+                            writeColor('♦', ConsoleColor.Black, ConsoleColor.DarkGray);
                                 break;
                         case 3:
-                            Console.BackgroundColor = ConsoleColor.Gray;
-                            Console.ForegroundColor = ConsoleColor.Black;
-                            Console.Write(" ");
-                            Console.ResetColor();
+                            writeColor(' ', ConsoleColor.Gray);
                                 break;
                         case 4:
-                            Console.BackgroundColor = ConsoleColor.DarkGray;
-                            Console.ForegroundColor = ConsoleColor.Black;
-                            Console.Write("▲");
-                            Console.ResetColor();
+                            writeColor('▲', ConsoleColor.Black, ConsoleColor.DarkGray);
                                 break;
                         case 5:
                             Console.Write(schet);
                                 break;
                         case 1:
-                            Console.BackgroundColor = ConsoleColor.DarkGreen;
-                            Console.ForegroundColor = ConsoleColor.Black;
-                            Console.Write("♠");
-                            Console.ResetColor();
+                            writeColor('♠', ConsoleColor.Black, ConsoleColor.DarkGreen);
                                 break;
                         case 7:
-                            Console.BackgroundColor = ConsoleColor.DarkYellow;
-                            Console.ForegroundColor = ConsoleColor.Black;
-                            Console.Write("☺");
-                            Console.ResetColor();
+                            writeColor('☺', ConsoleColor.Black, ConsoleColor.DarkYellow);
                                 break;
                         case 8:
-                            Console.BackgroundColor = ConsoleColor.Green;
-                            Console.ForegroundColor = ConsoleColor.Black;
-                            Console.Write("„");
-                            Console.ResetColor();
+                            writeColor('„', ConsoleColor.Black, ConsoleColor.Green);
                                 break;
                     };
                 }
@@ -823,54 +755,34 @@ class GameProgram
                     switch (town[y, x])
                     { 
                     case 0:
-                            Console.BackgroundColor = ConsoleColor.Blue;
-                            Console.Write(" ");
-                            Console.ResetColor();
+                            writeColor(' ', ConsoleColor.Blue);
                             break;
                     case 2:
-                            Console.BackgroundColor = ConsoleColor.Magenta;
-                            Console.Write(" ");
-                            Console.ResetColor();
+                            writeColor(' ', ConsoleColor.Magenta);
                             break;
                     case 3:
-                            Console.BackgroundColor = ConsoleColor.Gray;
-                            Console.Write(" ");
-                            Console.ResetColor();
+                            writeColor(' ', ConsoleColor.Gray);
                             break;
                     case 4:
-                            Console.BackgroundColor = ConsoleColor.DarkGray;
-                            Console.Write(" ");
-                            Console.ResetColor();
+                            writeColor(' ', ConsoleColor.DarkGray);
                             break;
                     case 5:
-                            Console.BackgroundColor = ConsoleColor.DarkRed;
-                            Console.Write(" ");
-                            Console.ResetColor();
+                            writeColor(' ', ConsoleColor.DarkRed);
                             break;
                     case 9:
-                            Console.BackgroundColor = ConsoleColor.Yellow;
-                            Console.Write(" ");
-                            Console.ResetColor();
+                            writeColor(' ', ConsoleColor.Yellow);
                             break;
                     case 1:
-                            Console.BackgroundColor = ConsoleColor.DarkGreen;
-                            Console.Write(" ");
-                            Console.ResetColor();
+                            writeColor(' ', ConsoleColor.DarkGreen);
                             break;
                     case 6:
                             Console.Write(" ");
                             break;
                     case 7:
-                            Console.BackgroundColor = ConsoleColor.DarkYellow;
-                            Console.ForegroundColor = ConsoleColor.Black;
-                            Console.Write("☺");
-                            Console.ResetColor();
+                            writeColor('☺', ConsoleColor.Black, ConsoleColor.DarkYellow);
                             break;
                     case 8:
-                            Console.BackgroundColor = ConsoleColor.Cyan;
-                            Console.ForegroundColor = ConsoleColor.Black;
-                            Console.Write("☻");
-                            Console.ResetColor();
+                            writeColor('☻', ConsoleColor.Black, ConsoleColor.Cyan);
                             break;
                     };
                 }
