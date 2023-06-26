@@ -1,6 +1,9 @@
 ﻿using System.Media;
 using System.Runtime.InteropServices;
 using MZ.Properties;
+using System.Linq;
+using System.Diagnostics.Metrics;
+using System.ComponentModel;
 
 class GameProgram
 {
@@ -55,164 +58,214 @@ class GameProgram
         ShowWindow(GetConsoleWindow(), 3);
         SetCurrentFont();
         Console.Title = "Maze";
-        Menu();
+        Loka3();
     }
+
+    /// <summary>
+    /// Метод для вывода символа
+    /// </summary>
+    /// <param name="a">Выводимый символ</param>
+    /// <param name="bg">Цвет фона</param>
+    static void Ran(char a, ConsoleColor bg)
+    {
+        Console.BackgroundColor = bg;
+        Console.Write(a);
+        Console.ResetColor();
+    }
+
+    /// <summary>
+    /// Метод для вывода символа
+    /// </summary>
+    /// <param name="a">Выводимый символ</param>
+    /// <param name="fg">Цвет шрифта</param>
+    /// <param name="bg">Цвет фона</param>
+    static void Ran(char a, ConsoleColor fg, ConsoleColor bg)
+    {
+        Console.BackgroundColor = bg;
+        Console.ForegroundColor = fg;
+        Console.Write(a);
+        Console.ResetColor();
+    }
+    
     static void Loka3()
     {
         Console.Clear();
         Console.CursorVisible = false;
         if (histori == 3)
         {
-            Console.WriteLine("Вы спустились в часть лабиринта с вводам пароля, необходимо подобрать пароль наступая на нажемные пластины," +
-                "если вы нажмете неправильную пластину, вас выкенет в самую первую комнату, а пароль сбросится и предется вводить все с самого начала.\r\n" +
-                "\r\nНажмите Enter чтобы продолжить...");
+            Console.WriteLine("Вы спустились в часть лабиринта с вводам пароля, необходимо подобрать пароль наступая на нажимные пластины," +
+                "если вы нажмете неправильную пластину, вас выкинет в самую первую комнату, а пароль сбросится и придётся вводить все с самого начала. \r\n" +
+                "\r\n Нажмите Enter чтобы продолжить...");
             Console.ReadKey(true);
             Console.Clear();
             histori++;
         }
-        int napr = 0, strok = 5, kolon = 5, temp = 0, kartax=11, kartay = 11, schet = 1;
+        int strok = 5, kolon = 5, temp = 0, kartax=11, kartay = 11, counter = 0;
         bool exit = false, rest = false, proh = false;
-        int[] password = { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
+
+
+
+        int[,] password = new int[,]
+        {
+            { 5, 2 },
+            { 7, 3 },
+            { 8, 5 },
+            { 7, 7 },
+            { 5, 8 },
+            { 3, 7 },
+            { 2, 5 },
+            { 3, 3 },
+
+            { 15, 2 },
+            { 17, 3 },
+            { 18, 5 },
+            { 17, 7 },
+            { 15, 8 },
+            { 13, 7 },
+            { 12, 5 },
+            { 13, 3 },
+
+            { 15, 12 },
+            { 17, 13 },
+            { 18, 15 },
+            { 17, 17 },
+            { 15, 18 },
+            { 13, 17 },
+            { 12, 15 },
+            { 13, 13 },
+        };
+
+
+
+
         int[] truepassword = { 7, 3, 5, 8, 1, 2, 6, 4 };
-        int[,] Chascop =
+        int[,] caveStart =
         {
-        { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1},
-        { 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1},
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 1, 0, 9, 0, 0, 7, 0, 0, 9, 0, 1, 0, 9, 0, 0, 0, 0, 0, 9, 0, 1},
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1},
-        { 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1},
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 9, 0, 0, 0, 0, 0, 9, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1},
+            { 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1},
+            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 1, 0, 9, 0, 0, 7, 0, 0, 9, 0, 1, 0, 9, 0, 0, 0, 0, 0, 9, 0, 1},
+            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1},
+            { 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1},
+            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 9, 0, 0, 0, 0, 0, 9, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
         };
-        int[,] Chas =
+        int[,] cave =
         {
-        { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1},
-        { 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1},
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 1, 0, 9, 0, 0, 7, 0, 0, 9, 0, 1, 0, 9, 0, 0, 0, 0, 0, 9, 0, 1},
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1},
-        { 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1},
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 9, 0, 0, 0, 0, 0, 9, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1},
+            { 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1},
+            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 1, 0, 9, 0, 0, 7, 0, 0, 9, 0, 1, 0, 9, 0, 0, 0, 0, 0, 9, 0, 1},
+            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1},
+            { 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1},
+            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 9, 0, 0, 0, 0, 0, 9, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 9, 0, 0, 0, 9, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
         };
-        while (exit == false)
+        while (!exit)
         {
-            if (rest == true)
+            if (rest)
             {
                 Console.Clear();
                 for (int o = 0; o < kartay; o++)
                 {
                     for (int i = 0; i < kartax; i++)
                     {
-                        Chas[o, i] = Chascop[o, i];
+                        cave[o, i] = caveStart[o, i];
                     }
                 }
                 rest = false;
-                for (int i = 0; i < 8 ; i++) { password[i] = 0; }
                 strok = 5; kolon = 5;
-                schet = 1;
+                counter = 0;
                 temp = 0;
                 kartay = 11;
                 kartax = 11;
-                password = new[] { 0, 0, 0, 0, 0, 0, 0, 0 };
-                truepassword = new[] { 7, 3, 5, 8, 1, 2, 6, 4 };
             }
 
             for (int o = 0; o < kartay; o++)
             {
                 for (int i = 0; i < kartax; i++)
                 {
-                    if (Chas[o, i] == 0)
+                    switch (cave[o, i])
                     {
-                        Console.BackgroundColor = ConsoleColor.Gray;
-                        Console.Write(" ");
-                        Console.ResetColor();
-                    }
-                    else if (Chas[o, i] == 1)
-                    {
-                        Console.BackgroundColor = ConsoleColor.DarkGray;
-                        Console.Write(" ");
-                        Console.ResetColor();
-                    }
-                    else if (Chas[o, i] == 2)
-                    {
-                        Console.BackgroundColor = ConsoleColor.Magenta;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.Write("♦");
-                        Console.ResetColor();
-                    }
-                    else if (Chas[o, i] == 8)
-                    {
-                        Console.BackgroundColor = ConsoleColor.Blue;
-                        Console.Write(" ");
-                        Console.ResetColor();
-                    }
-                    else if (Chas[o, i] == 9)
-                    {
-                        Console.BackgroundColor = ConsoleColor.Cyan;
-                        Console.Write(" ");
-                        Console.ResetColor();
-                    }
-                    else if (Chas[o, i] == 7)
-                    {
-                        Console.BackgroundColor = ConsoleColor.DarkYellow;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.Write("☺");
-                        Console.ResetColor();
-                    }
-                    else if (Chas[o, i] == 6)
-                    {
-                        Console.BackgroundColor = ConsoleColor.Black;
-                        Console.Write(" ");
-                        Console.ResetColor();
-                    }
+                        case 0:
+                            Ran(' ', ConsoleColor.Gray);
+                            break;
+                        case 1:
+                            Console.BackgroundColor = ConsoleColor.DarkGray;
+                            Console.Write(" ");
+                            Console.ResetColor();
+                            break;
+                        case 2:
+                            Ran('♦', ConsoleColor.Black, ConsoleColor.Magenta);
+                            break;
+                        case 8:
+                            Console.BackgroundColor = ConsoleColor.Blue;
+                            Console.Write(" ");
+                            Console.ResetColor();
+                            break;
+                        case 9:
+                            Console.BackgroundColor = ConsoleColor.Cyan;
+                            Console.Write(" ");
+                            Console.ResetColor();
+                            break;
+                        case 7:
+                            Console.BackgroundColor = ConsoleColor.DarkYellow;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.Write("☺");
+                            Console.ResetColor();
+                            break;
+                        case 6:
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            Console.Write(" ");
+                            Console.ResetColor();
+                            break;
+                    };
                 }
                 Console.WriteLine();
             }
@@ -221,161 +274,119 @@ class GameProgram
             {
                 case ConsoleKey.LeftArrow:
                 case ConsoleKey.A:
-                    napr = 1;
+                    if (kolon - 1 > 0 && (cave[strok, kolon - 1] == 0 || cave[strok, kolon - 1] == 8 || cave[strok, kolon - 1] == 9))
+                    {
+                        cave[strok, kolon] = temp;
+                        temp = cave[strok, kolon - 1];
+                        kolon--;
+                        cave[strok, kolon] = 7;
+                    }
+                    else if (kolon - 1 > 0 && (cave[strok, kolon - 1] == 2))
+                    {
+                        Console.Clear(); Console.WriteLine("Вы нашли кристалл и вернулись в город дабы продать его и приобрести билет. \r\n" +
+                "\r\n Нажмите Enter чтобы продолжить...");
+                        Console.ReadKey(true);
+                        kristal++;
+                        Console.Clear();
+                        bg3.Stop();
+                        Game();
+                    }
                     break;
                 case ConsoleKey.RightArrow:
                 case ConsoleKey.D:
-                    napr = 2;
+                    if (kolon + 1 < 20 && (cave[strok, kolon + 1] == 0 || cave[strok, kolon + 1] == 8 || cave[strok, kolon + 1] == 9))
+                    {
+                        cave[strok, kolon] = temp;
+                        temp = cave[strok, kolon + 1];
+                        kolon++;
+                        cave[strok, kolon] = 7;
+                    }
+                    else if (kolon + 1 < 20 && (cave[strok, kolon + 1] == 2))
+                    {
+                        Console.Clear(); Console.WriteLine("Вы нашли кристалл и вернулись в город дабы продать его и приобрести билет. \r\n" +
+                "\r\n Нажмите Enter чтобы продолжить...");
+                        Console.ReadKey(true);
+                        kristal++;
+                        Console.Clear();
+                        bg3.Stop();
+                        Game();
+                    }
                     break;
                 case ConsoleKey.UpArrow:
                 case ConsoleKey.W:
-                    napr = 3;
+                    if (strok - 1 > 0 && (cave[strok - 1, kolon] == 0 || cave[strok - 1, kolon] == 8 || cave[strok - 1, kolon] == 9))
+                    {
+                        cave[strok, kolon] = temp;
+                        temp = cave[strok - 1, kolon];
+                        strok--;
+                        cave[strok, kolon] = 7;
+                    }
+                    else if (strok - 1 > 0 && (cave[strok - 1, kolon] == 2))
+                    {
+                        Console.Clear(); Console.WriteLine("Вы нашли кристалл и вернулись в город дабы продать его и приобрести билет. \r\n" +
+                "\r\n Нажмите Enter чтобы продолжить...");
+                        Console.ReadKey(true);
+                        kristal++;
+                        Console.Clear();
+                        bg3.Stop();
+                        Game();
+                    }
                     break;
                 case ConsoleKey.DownArrow:
                 case ConsoleKey.S:
-                    napr = 4;
+                    if (strok + 1 < 30 && (cave[strok + 1, kolon] == 0 || cave[strok + 1, kolon] == 8 || cave[strok + 1, kolon] == 9))
+                    {
+                        cave[strok, kolon] = temp;
+                        temp = cave[strok + 1, kolon];
+                        strok++;
+                        cave[strok, kolon] = 7;
+                    }
+                    else if (strok + 1 < 30 && (cave[strok + 1, kolon] == 2))
+                    {
+                        Console.Clear(); Console.WriteLine("Вы нашли кристалл и вернулись в город дабы продать его и приобрести билет. \r\n" +
+                "\r\n Нажмите Enter чтобы продолжить...");
+                        Console.ReadKey(true);
+                        kristal++;
+                        Console.Clear();
+                        bg3.Stop();
+                        Game();
+                    }
                     break;
             }
-            if (napr == 1)
-            {
-                if (kolon - 1 > 0 && (Chas[strok, kolon - 1] == 0 || Chas[strok, kolon - 1] == 8 || Chas[strok, kolon - 1] == 9))
+
+
+                bool contains = false;
+                for (int i = 0; i < password.GetUpperBound(0); i++)
                 {
-                    Chas[strok, kolon] = temp;
-                    temp = Chas[strok, kolon - 1];
-                    kolon--;
-                    Chas[strok, kolon] = 7;
-                }
-                else if (kolon - 1 > 0 && (Chas[strok, kolon - 1] == 2)) { Console.Clear(); Console.WriteLine("Вы нашли кристал и вернулись в город дабы продать его и приобрести билет.\r\n" +
-                "\r\nНажмите Enter чтобы продолжить..."); 
-                    Console.ReadKey(true);
-                    kristal++;
-                    Console.Clear();
-                    bg3.Stop();
-                    Game();
-                }
-            }
-            if (napr == 2)
-            {
-                if (kolon + 1 < 20 && (Chas[strok, kolon + 1] == 0 || Chas[strok, kolon + 1] == 8 || Chas[strok, kolon + 1] == 9))
-                {
-                    Chas[strok, kolon] = temp;
-                    temp = Chas[strok, kolon + 1];
-                    kolon++;
-                    Chas[strok, kolon] = 7;
-                }
-                else if (kolon + 1 < 20 && (Chas[strok, kolon + 1] == 2)) { Console.Clear(); Console.WriteLine("Вы нашли кристал и вернулись в город дабы продать его и приобрести билет.\r\n" +
-                "\r\nНажмите Enter чтобы продолжить...");
-                    Console.ReadKey(true);
-                    kristal++;
-                    Console.Clear();
-                    bg3.Stop();
-                    Game();
-                }
-            }
-            if (napr == 3)
-            {
-                if (strok - 1 > 0 && (Chas[strok - 1, kolon] == 0 || Chas[strok - 1, kolon] == 8 || Chas[strok - 1, kolon] == 9))
-                {
-                    Chas[strok, kolon] = temp;
-                    temp = Chas[strok - 1, kolon];
-                    strok--;
-                    Chas[strok, kolon] = 7;
-                }
-                else if (strok - 1 > 0 && (Chas[strok - 1, kolon] == 2)) { Console.Clear(); Console.WriteLine("Вы нашли кристал и вернулись в город дабы продать его и приобрести билет.\r\n" +
-                "\r\nНажмите Enter чтобы продолжить...");
-                    Console.ReadKey(true);
-                    kristal++;
-                    Console.Clear();
-                    bg3.Stop();
-                    Game();
-                }
-            }
-            if (napr == 4)
-            {
-                if (strok + 1 < 30 && (Chas[strok + 1, kolon] == 0  || Chas[strok + 1, kolon] == 8 || Chas[strok + 1, kolon] == 9))
-                {
-                    Chas[strok, kolon] = temp;
-                    temp = Chas[strok + 1, kolon];
-                    strok++;
-                    Chas[strok, kolon] = 7;
-                }
-                else if (strok + 1 < 30 && (Chas[strok + 1, kolon] == 2)) { Console.Clear(); Console.WriteLine("Вы нашли кристал и вернулись в город дабы продать его и приобрести билет.\r\n" +
-                "\r\nНажмите Enter чтобы продолжить...");
-                    Console.ReadKey(true);
-                    kristal++;
-                    Console.Clear();
-                    bg3.Stop();
-                    Game();
-                }
-            }
-            if (kolon < 11 && strok < 11)
-            {
-                if (temp == 9 && (kolon == 5 && strok == 2)) { password[0] = schet; if (password[0] == truepassword[0]) { schet++; temp = 8; } else { rest = true; } }
-                else if (temp == 9 && (kolon == 7 && strok == 3)) { password[1] = schet; if (password[1] == truepassword[1]) { schet++; temp = 8; } else { rest = true; } }
-                else if (temp == 9 && (kolon == 8 && strok == 5)) { password[2] = schet; if (password[2] == truepassword[2]) { schet++; temp = 8; } else { rest = true; } }
-                else if (temp == 9 && (kolon == 7 && strok == 7)) { password[3] = schet; if (password[3] == truepassword[3]) { schet++; temp = 8; } else { rest = true; } }
-                else if (temp == 9 && (kolon == 5 && strok == 8)) { password[4] = schet; if (password[4] == truepassword[4]) { schet++; temp = 8; } else { rest = true; } }
-                else if (temp == 9 && (kolon == 3 && strok == 7)) { password[5] = schet; if (password[5] == truepassword[5]) { schet++; temp = 8; } else { rest = true; } }
-                else if (temp == 9 && (kolon == 2 && strok == 5)) { password[6] = schet; if (password[6] == truepassword[6]) { schet++; temp = 8; } else { rest = true; } }
-                else if (temp == 9 && (kolon == 3 && strok == 3)) { password[7] = schet; if (password[7] == truepassword[7]) { schet++; temp = 8; } else { rest = true; } }
-                if (proh == false)
-                {
-                    for (int i = 0; i < password.Length; i++) { if (password[i] == 0) { proh = false; break; } else { proh = true; } }
-                    if (proh == true)
+                    if (password[i, 0] == kolon && password[i, 1] == strok)
                     {
-                        Chas[5, 10] = 0;
-                        kartax = 21;
-                        schet = 1;
-                        truepassword = new[] { 6, 5, 8, 1, 4, 7, 3, 2 };
-                        password = new[] { 0, 0, 0, 0, 0, 0, 0, 0 };
-                        proh = false;
+                        contains = true;
+                        break;
                     }
                 }
-            }
-            else if (kolon > 11 && strok < 11)
-            {
-                if (temp == 9 && (kolon == 15 && strok == 2)) { password[0] = schet; if (password[0] == truepassword[0]) { schet++; temp = 8; } else { rest = true; } }
-                else if (temp == 9 && (kolon == 17 && strok == 3)) { password[1] = schet; if (password[1] == truepassword[1]) { schet++; temp = 8; } else { rest = true; } }
-                else if (temp == 9 && (kolon == 18 && strok == 5)) { password[2] = schet; if (password[2] == truepassword[2]) { schet++; temp = 8; } else { rest = true; } }
-                else if (temp == 9 && (kolon == 17 && strok == 7)) { password[3] = schet; if (password[3] == truepassword[3]) { schet++; temp = 8; } else { rest = true; } }
-                else if (temp == 9 && (kolon == 15 && strok == 8)) { password[4] = schet; if (password[4] == truepassword[4]) { schet++; temp = 8; } else { rest = true; } }
-                else if (temp == 9 && (kolon == 13 && strok == 7)) { password[5] = schet; if (password[5] == truepassword[5]) { schet++; temp = 8; } else { rest = true; } }
-                else if (temp == 9 && (kolon == 12 && strok == 5)) { password[6] = schet; if (password[6] == truepassword[6]) { schet++; temp = 8; } else { rest = true; } }
-                else if (temp == 9 && (kolon == 13 && strok == 3)) { password[7] = schet; if (password[7] == truepassword[7]) { schet++; temp = 8; } else { rest = true; } }
-                if (proh == false)
+
+                if (contains)
                 {
-                    for (int i = 0; i < password.Length; i++) { if (password[i] == 0) { proh = false; break; } else { proh = true; } }
-                    if (proh == true)
+                    if (password[counter, 0] == kolon && password[counter, 1] == strok && cave[kolon, strok] == 9)
                     {
-                        Chas[10, 15] = 0;
-                        kartay = 21;
-                        schet = 1;
-                        truepassword = new[] { 1, 4, 6, 5, 3, 8, 7, 2 };
-                        password = new[] { 0, 0, 0, 0, 0, 0, 0, 0 };
-                        proh = false;
+                        counter++;
+                        temp = 8;
+                    }
+                    else
+                    {
+                        rest = true;
                     }
                 }
-            }
-            else if (kolon > 11 && strok > 11)
-            {
-                if (temp == 9 && (kolon == 15 && strok == 12)) { password[0] = schet; if (password[0] == truepassword[0]) { schet++; temp = 8; } else { rest = true; } }
-                else if (temp == 9 && (kolon == 17 && strok == 13)) { password[1] = schet; if (password[1] == truepassword[1]) { schet++; temp = 8; } else { rest = true; } }
-                else if (temp == 9 && (kolon == 18 && strok == 15)) { password[2] = schet; if (password[2] == truepassword[2]) { schet++; temp = 8; } else { rest = true; } }
-                else if (temp == 9 && (kolon == 17 && strok == 17)) { password[3] = schet; if (password[3] == truepassword[3]) { schet++; temp = 8; } else { rest = true; } }
-                else if (temp == 9 && (kolon == 15 && strok == 18)) { password[4] = schet; if (password[4] == truepassword[4]) { schet++; temp = 8; } else { rest = true; } }
-                else if (temp == 9 && (kolon == 13 && strok == 17)) { password[5] = schet; if (password[5] == truepassword[5]) { schet++; temp = 8; } else { rest = true; } }
-                else if (temp == 9 && (kolon == 12 && strok == 15)) { password[6] = schet; if (password[6] == truepassword[6]) { schet++; temp = 8; } else { rest = true; } }
-                else if (temp == 9 && (kolon == 13 && strok == 13)) { password[7] = schet; if (password[7] == truepassword[7]) { schet++; temp = 8; } else { rest = true; } }
-                if (proh == false)
+                if (counter >= 8)
                 {
-                    for (int i = 0; i < password.Length; i++) { if (password[i] == 0) { proh = false; break; } else { proh = true; } }
-                    if (proh == true)
-                    {
-                        Chas[20, 15] = 0;
-                        kartay = 31;
-                    }
+                    cave[10, 15] = 0;
+                    kartax = 21;
                 }
-            }
+                else if (counter >= 16)
+                {
+                    cave[20, 15] = 0;
+                    kartay = 31;
+                }
             Console.SetCursorPosition(0, 0);
         }
     }
@@ -385,15 +396,15 @@ class GameProgram
         Console.Clear();
         if (histori == 2)
         {
-            Console.WriteLine("Вы попали в лабиринт, вам необходимо найти выход, ведь вход в лабиринт завалило как только вы в него зашли, поэтому пути назад нет,\r\n" +
-                "есть слух что в последней комнате всегда есть запасной выход. Идти вам уже некуда, так что вперед.\r\n" +
-                "\r\nНажмите Enter чтобы продолжить...");
+            Console.WriteLine("Вы попали в лабиринт, вам необходимо найти выход, ведь вход в лабиринт завалило, как только вы в него зашли, поэтому пути назад нет, \r\n" +
+                "есть слух что в последней комнате всегда есть запасной выход. Идти вам уже некуда, так что вперёд. \r\n" +
+                "\r\n Нажмите Enter чтобы продолжить...");
             Console.ReadKey(true);
             Console.Clear();
             histori++;
         }
         Console.CursorVisible = false;
-        int napr = 0, strok = 24, kolon = 1, temp = 0;
+        int strok = 24, kolon = 1, temp = 0;
         bool exit = false;
         int[,] lab =
             {
@@ -450,35 +461,37 @@ class GameProgram
                         {
                             for (int i = -1; i < 2; i++)
                             {
-                                if (u + o >= 0 && u + o < 38 && p + i >= 0 && p + i < 38 && lab[u + o, p + i] == 0)
+                                if (u + o >= 0 && u + o < 38 && p + i >= 0 && p + i < 38)
                                 {
-                                    Console.SetCursorPosition( p + i,u + o);
-                                    Console.BackgroundColor = ConsoleColor.Gray;
-                                    Console.Write(" ");
-                                    Console.ResetColor();
-                                }
-                                else if (u + o >= 0 && u + o < 38 && p + i >= 0 && p + i < 38 && lab[u + o, p + i] == 2)
-                                {
-                                    Console.SetCursorPosition(p + i, u + o);
-                                    Console.BackgroundColor = ConsoleColor.Magenta;
-                                    Console.ForegroundColor = ConsoleColor.Black;
-                                    Console.Write("♦");
-                                    Console.ResetColor();
-                                }
-                                else if (u + o >= 0 && u + o < 38 && p + i >= 0 && p + i < 38 && lab[u + o, p + i] == 1)
-                                {
-                                    Console.SetCursorPosition(p + i, u + o);
-                                    Console.BackgroundColor = ConsoleColor.DarkGray;
-                                    Console.Write(" ");
-                                    Console.ResetColor();
-                                }
-                                else if (u + o >= 0 && u + o < 38 && p + i >= 0 && p + i < 38 && lab[u + o, p + i] == 7)
-                                {
-                                    Console.SetCursorPosition(p + i, u + o);
-                                    Console.BackgroundColor = ConsoleColor.DarkYellow;
-                                    Console.ForegroundColor = ConsoleColor.Black;
-                                    Console.Write("☺");
-                                    Console.ResetColor();
+                                    switch(lab[u + o, p + i])
+                                    {
+                                        case 0:
+                                            Console.SetCursorPosition(p + i, u + o);
+                                            Console.BackgroundColor = ConsoleColor.Gray;
+                                            Console.Write(" ");
+                                            Console.ResetColor();
+                                            break;
+                                        case 2:
+                                            Console.SetCursorPosition(p + i, u + o);
+                                            Console.BackgroundColor = ConsoleColor.Magenta;
+                                            Console.ForegroundColor = ConsoleColor.Black;
+                                            Console.Write("♦");
+                                            Console.ResetColor();
+                                            break;
+                                        case 1:
+                                            Console.SetCursorPosition(p + i, u + o);
+                                            Console.BackgroundColor = ConsoleColor.DarkGray;
+                                            Console.Write(" ");
+                                            Console.ResetColor();
+                                            break;
+                                        case 7:
+                                            Console.SetCursorPosition(p + i, u + o);
+                                            Console.BackgroundColor = ConsoleColor.DarkYellow;
+                                            Console.ForegroundColor = ConsoleColor.Black;
+                                            Console.Write("☺");
+                                            Console.ResetColor();
+                                            break;
+                                    }
                                 }
                             }
                         }
@@ -491,72 +504,56 @@ class GameProgram
             {
                 case ConsoleKey.LeftArrow:
                 case ConsoleKey.A:
-                    napr = 1;
+                    if (kolon - 1 >= 0 && lab[strok, kolon - 1] == 0)
+                    {
+                        lab[strok, kolon] = temp;
+                        temp = lab[strok, kolon - 1];
+                        kolon--;
+                        lab[strok, kolon] = 7;
+                    }
+                    else if (kolon - 1 >= 0 && lab[strok, kolon - 1] == 2)
+                    {
+                        Console.BackgroundColor = ConsoleColor.Blue;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.SetCursorPosition(40, 24);
+                        Console.WriteLine("Проход завалило, надо найти другой выход");
+                        Console.ReadKey(true);
+                        Console.SetCursorPosition(40, 24);
+                        Console.ResetColor();
+                        Console.WriteLine("                                        ");
+                    }
                     break;
                 case ConsoleKey.RightArrow:
                 case ConsoleKey.D:
-                    napr = 2;
+                    if (kolon + 1 < 38 && lab[strok, kolon + 1] == 0)
+                    {
+                        lab[strok, kolon] = temp;
+                        temp = lab[strok, kolon + 1];
+                        kolon++;
+                        lab[strok, kolon] = 7;
+                    }
+                    else if (kolon + 1 < 38 && lab[strok, kolon + 1] == 2) { Loka3(); }
                     break;
                 case ConsoleKey.UpArrow:
                 case ConsoleKey.W:
-                    napr = 3;
+                    if (strok - 1 >= 0 && lab[strok - 1, kolon] == 0)
+                    {
+                        lab[strok, kolon] = temp;
+                        temp = lab[strok - 1, kolon];
+                        strok--;
+                        lab[strok, kolon] = 7;
+                    }
                     break;
                 case ConsoleKey.DownArrow:
                 case ConsoleKey.S:
-                    napr = 4;
+                    if (strok + 1 < 38 && lab[strok + 1, kolon] == 0)
+                    {
+                        lab[strok, kolon] = temp;
+                        temp = lab[strok + 1, kolon];
+                        strok++;
+                        lab[strok, kolon] = 7;
+                    }
                     break;
-            }
-            if (napr == 1)
-            {
-                if (kolon - 1 >= 0 && lab[strok, kolon - 1] == 0)
-                {
-                    lab[strok, kolon] = temp;
-                    temp = lab[strok, kolon - 1];
-                    kolon--;
-                    lab[strok, kolon] = 7;
-                }
-                else if (kolon - 1 >= 0 && lab[strok, kolon - 1] == 2) 
-                { 
-                    Console.BackgroundColor = ConsoleColor.Blue;
-                    Console.ForegroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(40, 24);
-                    Console.WriteLine("Проход заволило, надо найти другой выход");
-                    Console.ReadKey(true);
-                    Console.SetCursorPosition(40, 24);
-                    Console.ResetColor();
-                    Console.WriteLine("                                        ");
-                }
-            }
-            if (napr == 2)
-            {
-                if (kolon + 1 < 38 && lab[strok, kolon + 1] == 0)
-                {
-                    lab[strok, kolon] = temp;
-                    temp = lab[strok, kolon + 1];
-                    kolon++;
-                    lab[strok, kolon] = 7;
-                }
-                else if (kolon + 1 < 38 && lab[strok, kolon + 1] == 2) {Loka3(); }
-            }
-            if (napr == 3)
-            {
-                if (strok - 1 >= 0 && lab[strok - 1, kolon] == 0)
-                {
-                    lab[strok, kolon] = temp;
-                    temp = lab[strok - 1, kolon];
-                    strok--;
-                    lab[strok, kolon] = 7;
-                }
-            }
-            if (napr == 4)
-            {
-                if (strok + 1 < 38 && lab[strok + 1, kolon] == 0)
-                {
-                    lab[strok, kolon] = temp;
-                    temp = lab[strok + 1, kolon];
-                    strok++;
-                    lab[strok, kolon] = 7;
-                }
             }
         }
     }
@@ -567,19 +564,19 @@ class GameProgram
         Console.Clear();
         if (histori == 1)
         {
-            Console.WriteLine("Выйдя из города вы попали на дорогу, она видет к лабиринту, однако она очень длинная и вам никак не успеть,\r\n" +
-                "по этому вам необходимо найти короткую дорогу, через горы (▲) и воду (~) передвигаться вы не можете.\r\n" +
-                "Проходя через лес есть большая вероятность встретить монстров и получить раны (♥), вы не безсмертны будьте внимательны.\r\n" +
-                "Вам необходимо попасть в безопасную зону (♦) до наступления ночи (колличество ходов снизу), так как ночью выходят очень опасные монстры\r\n" +
-                "и без сопровождения опытных авантюристов ночевать на открытой местности невкоем случае нельзя. Доберитесь до лабиринта, точки проходов отмечены (♦).\r\n" +
-                "Удачи в пути!\r\n" +
-                "\r\nНажмите Enter чтобы продолжить...");
+            Console.WriteLine("Выйдя из города вы попали на дорогу, она ведёт к лабиринту, однако она очень длинная и вам никак не успеть, \r\n" +
+                "по этому вам необходимо найти короткую дорогу, через горы (▲) и воду (~) передвигаться вы не можете. \r\n" +
+                "Проходя через лес есть большая вероятность встретить монстров и получить раны (♥), вы не бессмертно будьте внимательны. \r\n" +
+                "Вам необходимо попасть в безопасную зону (♦) до наступления ночи (количество ходов снизу), так как ночью выходят очень опасные монстры\r\n" +
+                "и без сопровождения опытных авантюристов ночевать на открытой местности некоем случае нельзя. Доберитесь до лабиринта, точки проходов отмечены (♦). \r\n" +
+                "Удачи в пути! \r\n" +
+                "\r\n Нажмите Enter чтобы продолжить...");
             Console.ReadKey(true);
             Console.Clear();
             histori++;
         }
         bool exit = false;
-        int napr = 0, strok = 5, kolon = 2, temp = 3, schet = 22, life = 5, chekx = 19;
+        int strok = 5, kolon = 2, temp = 3, schet = 22, life = 5, chekx = 19;
         int[,] map =
             {
         { 0, 0, 0, 0, 0, 4, 1, 1, 1, 1, 8, 8, 8, 8, 8, 8, 8, 8, 4, 8, 0, 0, 0, 0, 0, 0, 0, 0, 1, 8, 1, 3, 3, 3, 1, 1, 1},
@@ -601,73 +598,66 @@ class GameProgram
             {
                 for (int x = 0; x < chekx; x++)
                 {
-                    if (map[y, x] == 0)
-                    {
-                        Console.BackgroundColor = ConsoleColor.Blue;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.Write("~");
-                        Console.ResetColor();
-                    }
-                    else if (map[y, x] == 2)
-                    {
-                        Console.BackgroundColor = ConsoleColor.Magenta;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.Write("♦");
-                        Console.ResetColor();
-                    }
-                    else if (map[y, x] == 6)
-                    {
-                        Console.BackgroundColor = ConsoleColor.Yellow;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.Write("♦");
-                        Console.ResetColor();
-                    }
-                    else if (map[y, x] == 9)
-                    {
-                        Console.BackgroundColor = ConsoleColor.DarkGray;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.Write("♦");
-                        Console.ResetColor();
-                    }
-                    else if (map[y, x] == 3)
-                    {
-                        Console.BackgroundColor = ConsoleColor.Gray;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.Write(" ");
-                        Console.ResetColor();
-                    }
-                    else if (map[y, x] == 4)
-                    {
-                        Console.BackgroundColor = ConsoleColor.DarkGray;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.Write("▲");
-                        Console.ResetColor();
-                    }
-                    else if (map[y, x] == 5)
-                    {
-                        Console.Write(schet);
-                    }
-                    else if (map[y, x] == 1)
-                    {
-                        Console.BackgroundColor = ConsoleColor.DarkGreen;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.Write("♠");
-                        Console.ResetColor();
-                    }
-                    else if (map[y, x] == 7)
-                    {
-                        Console.BackgroundColor = ConsoleColor.DarkYellow;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.Write("☺");
-                        Console.ResetColor();
-                    }
-                    else if (map[y, x] == 8)
-                    {
-                        Console.BackgroundColor = ConsoleColor.Green;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.Write("„");
-                        Console.ResetColor();
-                    }
+                    switch (map[y, x])
+                        {
+                        case 0:
+                            Console.BackgroundColor = ConsoleColor.Blue;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.Write("~");
+                            Console.ResetColor();
+                                break;
+                        case 2:
+                            Console.BackgroundColor = ConsoleColor.Magenta;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.Write("♦");
+                            Console.ResetColor();
+                                break;
+                        case 6:
+                            Console.BackgroundColor = ConsoleColor.Yellow;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.Write("♦");
+                            Console.ResetColor();
+                                break;
+                        case 9:
+                            Console.BackgroundColor = ConsoleColor.DarkGray;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.Write("♦");
+                            Console.ResetColor();
+                                break;
+                        case 3:
+                            Console.BackgroundColor = ConsoleColor.Gray;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.Write(" ");
+                            Console.ResetColor();
+                                break;
+                        case 4:
+                            Console.BackgroundColor = ConsoleColor.DarkGray;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.Write("▲");
+                            Console.ResetColor();
+                                break;
+                        case 5:
+                            Console.Write(schet);
+                                break;
+                        case 1:
+                            Console.BackgroundColor = ConsoleColor.DarkGreen;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.Write("♠");
+                            Console.ResetColor();
+                                break;
+                        case 7:
+                            Console.BackgroundColor = ConsoleColor.DarkYellow;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.Write("☺");
+                            Console.ResetColor();
+                                break;
+                        case 8:
+                            Console.BackgroundColor = ConsoleColor.Green;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.Write("„");
+                            Console.ResetColor();
+                                break;
+                    };
                 }
                 Console.WriteLine();
             }
@@ -681,130 +671,114 @@ class GameProgram
             {
                 case ConsoleKey.LeftArrow:
                 case ConsoleKey.A:
-                    napr = 1;
+                    if (kolon - 1 >= 0 && map[strok, kolon - 1] != 0 && map[strok, kolon - 1] != 4 && map[strok, kolon - 1] != 2 && map[strok, kolon - 1] != 1)
+                    {
+                        map[strok, kolon] = temp;
+                        temp = map[strok, kolon - 1];
+                        kolon--;
+                        schet--;
+                        map[strok, kolon] = 7;
+                    }
+                    else if (kolon - 1 >= 0 && map[strok, kolon - 1] != 0 && map[strok, kolon - 1] != 4 && map[strok, kolon - 1] == 2 && map[strok, kolon - 1] != 1)
+                    {
+                        Console.Clear();
+                        Game();
+                    }
+                    else if (kolon - 1 >= 0 && map[strok, kolon - 1] != 0 && map[strok, kolon - 1] == 1)
+                    {
+                        map[strok, kolon] = temp;
+                        temp = map[strok, kolon - 1];
+                        kolon--;
+                        schet--;
+                        map[strok, kolon] = 7;
+                        life--;
+                    }
                     break;
                 case ConsoleKey.RightArrow:
                 case ConsoleKey.D:
-                    napr = 2;
+                    if (kolon + 1 < chekx && map[strok, kolon + 1] != 0 && map[strok, kolon + 1] != 4 && map[strok, kolon + 1] != 2 && map[strok, kolon + 1] != 1 && map[strok, kolon + 1] != 6 && map[strok, kolon + 1] != 9)
+                    {
+                        map[strok, kolon] = temp;
+                        temp = map[strok, kolon + 1];
+                        kolon++;
+                        schet--;
+                        map[strok, kolon] = 7;
+                    }
+                    else if (kolon + 1 < chekx && map[strok, kolon + 1] != 0 && map[strok, kolon + 1] != 4 && map[strok, kolon + 1] != 1 && map[strok, kolon + 1] == 6)
+                    {
+                        map[strok, kolon] = temp;
+                        temp = map[strok, kolon + 1];
+                        kolon++;
+                        map[strok, kolon] = 7;
+                        chekx = 37;
+                        life = 5;
+                        schet = 31;
+                    }
+                    else if (kolon + 1 < chekx && map[strok, kolon + 1] != 0 && map[strok, kolon + 1] != 4 && map[strok, kolon + 1] != 1 && map[strok, kolon + 1] == 9)
+                    {
+                        if (strok == 2 && kolon + 1 == 36) { Console.WriteLine("Проход в шахту завален, ищите другой вход!"); }
+                        else { Loka2(); bg2.Stop(); }
+                    }
+                    else if (kolon + 1 < chekx && map[strok, kolon + 1] != 0 && map[strok, kolon + 1] == 1)
+                    {
+                        map[strok, kolon] = temp;
+                        temp = map[strok, kolon + 1];
+                        kolon++;
+                        schet--;
+                        map[strok, kolon] = 7;
+                        life--;
+                    }
                     break;
                 case ConsoleKey.UpArrow:
                 case ConsoleKey.W:
-                    napr = 3;
+                    if (strok - 1 >= 0 && map[strok - 1, kolon] != 0 && map[strok - 1, kolon] != 4 && map[strok - 1, kolon] != 2 && map[strok - 1, kolon] != 1)
+                    {
+                        map[strok, kolon] = temp;
+                        temp = map[strok - 1, kolon];
+                        strok--;
+                        schet--;
+                        map[strok, kolon] = 7;
+                    }
+                    else if (strok - 1 >= 0 && map[strok - 1, kolon] != 0 && map[strok - 1, kolon] != 4 && map[strok - 1, kolon] == 2 && map[strok - 1, kolon] != 1)
+                    {
+                        Console.Clear();
+                        Game();
+                    }
+                    else if (strok - 1 >= 0 && map[strok - 1, kolon] != 0 && map[strok - 1, kolon] == 1)
+                    {
+                        map[strok, kolon] = temp;
+                        temp = map[strok - 1, kolon];
+                        strok--;
+                        schet--;
+                        map[strok, kolon] = 7;
+                        life--;
+                    }
                     break;
                 case ConsoleKey.DownArrow:
                 case ConsoleKey.S:
-                    napr = 4;
+                    if (strok + 1 < 12 && map[strok + 1, kolon] != 0 && map[strok + 1, kolon] != 4 && map[strok + 1, kolon] != 2 && map[strok + 1, kolon] != 1)
+                    {
+                        map[strok, kolon] = temp;
+                        temp = map[strok + 1, kolon];
+                        strok++;
+                        schet--;
+                        map[strok, kolon] = 7;
+                    }
+                    else if (strok + 1 < 12 && map[strok + 1, kolon] != 0 && map[strok + 1, kolon] != 4 && map[strok + 1, kolon] == 2 && map[strok + 1, kolon] != 1)
+                    {
+                        Console.Clear();
+                        Game();
+                    }
+                    else if (strok + 1 < 12 && map[strok + 1, kolon] != 0 && map[strok + 1, kolon] == 1)
+                    {
+                        map[strok, kolon] = temp;
+                        temp = map[strok + 1, kolon];
+                        strok++;
+                        schet--;
+                        map[strok, kolon] = 7;
+                        life--;
+                    }
                     break;
-            }
-            if (napr == 1)
-            {
-                if (kolon - 1 >= 0 && map[strok, kolon - 1] != 0 && map[strok, kolon - 1] != 4 && map[strok, kolon - 1] != 2 && map[strok, kolon - 1] != 1)
-                {
-                    map[strok, kolon] = temp;
-                    temp = map[strok, kolon - 1];
-                    kolon--;
-                    schet--;
-                    map[strok, kolon] = 7;
-                }
-                else if (kolon - 1 >= 0 && map[strok, kolon - 1] != 0 && map[strok, kolon - 1] != 4 && map[strok, kolon - 1] == 2 && map[strok, kolon - 1] != 1)
-                {
-                    Console.Clear();
-                    Game();
-                }
-                else if (kolon - 1 >= 0 && map[strok, kolon - 1] != 0 && map[strok, kolon - 1] == 1)
-                {
-                    map[strok, kolon] = temp;
-                    temp = map[strok, kolon - 1];
-                    kolon--;
-                    schet--;
-                    map[strok, kolon] = 7;
-                    life--;
-                }
-            }
-            if (napr == 2)
-            {
-                if (kolon + 1 < chekx && map[strok, kolon + 1] != 0 && map[strok, kolon + 1] != 4 && map[strok, kolon + 1] != 2 && map[strok, kolon + 1] != 1 && map[strok, kolon + 1] != 6 && map[strok, kolon + 1] != 9)
-                {
-                    map[strok, kolon] = temp;
-                    temp = map[strok, kolon + 1];
-                    kolon++;
-                    schet--;
-                    map[strok, kolon] = 7;
-                }
-                else if (kolon + 1 < chekx && map[strok, kolon + 1] != 0 && map[strok, kolon + 1] != 4 && map[strok, kolon + 1] != 1 && map[strok, kolon + 1] == 6)
-                {
-                    map[strok, kolon] = temp;
-                    temp = map[strok, kolon + 1];
-                    kolon++;
-                    map[strok, kolon] = 7;
-                    chekx = 37;
-                    life = 5;
-                    schet = 31;
-                }
-                else if (kolon + 1 < chekx && map[strok, kolon + 1] != 0 && map[strok, kolon + 1] != 4 && map[strok, kolon + 1] != 1 && map[strok, kolon + 1] == 9)
-                {
-                    if (strok == 2 && kolon + 1 == 36) { Console.WriteLine("Проход в шахту завален, ищите другой вход!"); }
-                    else { Loka2(); bg2.Stop(); }
-                }
-                else if (kolon + 1 < chekx && map[strok, kolon + 1] != 0 && map[strok, kolon + 1] == 1)
-                {
-                    map[strok, kolon] = temp;
-                    temp = map[strok, kolon + 1];
-                    kolon++;
-                    schet--;
-                    map[strok, kolon] = 7;
-                    life--;
-                }
-            }
-            if (napr == 3)
-            {
-                if (strok - 1 >= 0 && map[strok - 1, kolon] != 0 && map[strok - 1, kolon] != 4 && map[strok - 1, kolon] != 2 && map[strok - 1, kolon] != 1)
-                {
-                    map[strok, kolon] = temp;
-                    temp = map[strok - 1, kolon];
-                    strok--;
-                    schet--;
-                    map[strok, kolon] = 7;
-                }
-                else if (strok - 1 >= 0 && map[strok - 1, kolon] != 0 && map[strok - 1, kolon] != 4 && map[strok - 1, kolon] == 2 && map[strok - 1, kolon] != 1)
-                {
-                    Console.Clear();
-                    Game();
-                }
-                else if (strok - 1 >= 0 && map[strok - 1, kolon] != 0 && map[strok - 1, kolon] == 1)
-                {
-                    map[strok, kolon] = temp;
-                    temp = map[strok - 1, kolon];
-                    strok--;
-                    schet--;
-                    map[strok, kolon] = 7;
-                    life--;
-                }
-            }
-            if (napr == 4)
-            {
-                if (strok + 1 < 12 && map[strok + 1, kolon] != 0 && map[strok + 1, kolon] != 4 && map[strok + 1, kolon] != 2 && map[strok + 1, kolon] != 1)
-                {
-                    map[strok, kolon] = temp;
-                    temp = map[strok + 1, kolon];
-                    strok++;
-                    schet--;
-                    map[strok, kolon] = 7;
-                }
-                else if (strok + 1 < 12 && map[strok + 1, kolon] != 0 && map[strok + 1, kolon] != 4 && map[strok + 1, kolon] == 2 && map[strok + 1, kolon] != 1)
-                {
-                    Console.Clear();
-                    Game();
-                }
-                else if (strok + 1 < 12 && map[strok + 1, kolon] != 0 && map[strok + 1, kolon] == 1)
-                {
-                    map[strok, kolon] = temp;
-                    temp = map[strok + 1, kolon];
-                    strok++;
-                    schet--;
-                    map[strok, kolon] = 7;
-                    life--;
-                }
             }
             Console.SetCursorPosition(0, 0);
         }
@@ -814,20 +788,20 @@ class GameProgram
         Console.CursorVisible = false;
         if (histori == 0)
         {
-            Console.WriteLine("Вы находитесь в городе на которые в скором времени наподет армия девонов,\r\n" +
-                "дабы выжить необходимо уплыть на корабле, однако мест на корабле не хватает. Однако капитан корабля готов продать вам билет за 1000 монет.\r\n" +
-                "Такая сумма неподъемна для вас. Разачаровавшись, вы ушли в бар дабы хотябы выпить в свой последний раз.\r\n" +
-                "Усевшись за барную стойку рядом со старцем, вы завили с ним беседу и узнали, что на востоке есть неразграбленный лабиринт.\r\n" +
-                "Там по легендам находится давольно дорогой кристал и местный ювилир готов выкупить его у любого за 1000 монет.\r\n" +
-                "Услышав это вы собрались духом, поблагадарили старца и вышли на дорогу к выходу из города, да начнется ваше приключение.\r\n" +
-                "\r\nНажмите Enter чтобы продолжить...");
+            Console.WriteLine("Вы находитесь в городе на которые в скором времени нападёт армия девонов, \r\n" +
+                "дабы выжить необходимо уплыть на корабле, однако мест на корабле не хватает. Однако капитан корабля готов продать вам билет за 1000 монет. \r\n" +
+                "Такая сумма неподъемна для вас. Разочаровавшись, вы ушли в бар дабы хотя бы выпить в свой последний раз. \r\n" +
+                "Усевшись за барную стойку рядом со старцем, вы завили с ним беседу и узнали, что на востоке есть не разграбленный лабиринт. \r\n" +
+                "Там по легендам находится довольно дорогой кристалл и местный ювелир готов выкупить его у любого за 1000 монет. \r\n" +
+                "Услышав это вы собрались духом, поблагодарили старца и вышли на дорогу к выходу из города, да начнется ваше приключение. \r\n" +
+                "\r\n Нажмите Enter чтобы продолжить...");
             Console.ReadKey(true);
             Console.Clear();
             histori++;
         }
         bg.PlayLooping();
         bool exit = false, dialog = false, dialog1 = false;
-        int napr = 0, strok = 7, kolon = 21, temp = 4, money = 250;
+        int strok = 7, kolon = 21, temp = 4, money = 250;
         int[,] town =
             {
         { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
@@ -846,66 +820,59 @@ class GameProgram
             {
                 for (int x = 0; x < 24; x++)
                 {
-                    if (town[y, x] == 0)
-                    {
-                        Console.BackgroundColor = ConsoleColor.Blue;
-                        Console.Write(" ");
-                        Console.ResetColor();
-                    }
-                    else if (town[y, x] == 2)
-                    {
-                        Console.BackgroundColor = ConsoleColor.Magenta;
-                        Console.Write(" ");
-                        Console.ResetColor();
-                    }
-                    else if (town[y, x] == 3)
-                    {
-                        Console.BackgroundColor = ConsoleColor.Gray;
-                        Console.Write(" ");
-                        Console.ResetColor();
-                    }
-                    else if (town[y, x] == 4)
-                    {
-                        Console.BackgroundColor = ConsoleColor.DarkGray;
-                        Console.Write(" ");
-                        Console.ResetColor();
-                    }
-                    else if (town[y, x] == 5)
-                    {
-                        Console.BackgroundColor = ConsoleColor.DarkRed;
-                        Console.Write(" ");
-                        Console.ResetColor();
-                    }
-                    else if (town[y, x] == 9)
-                    {
-                        Console.BackgroundColor = ConsoleColor.Yellow;
-                        Console.Write(" ");
-                        Console.ResetColor();
-                    }
-                    else if (town[y, x] == 1)
-                    {
-                        Console.BackgroundColor = ConsoleColor.DarkGreen;
-                        Console.Write(" ");
-                        Console.ResetColor();
-                    }
-                    else if (town[y, x] == 6)
-                    {
-                        Console.Write(" ");
-                    }
-                    else if (town[y, x] == 7)
-                    {
-                        Console.BackgroundColor = ConsoleColor.DarkYellow;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.Write("☺");
-                        Console.ResetColor();
-                    }
-                    else if (town[y, x] == 8)
-                    {
-                        Console.BackgroundColor = ConsoleColor.Cyan;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.Write("☻");
-                        Console.ResetColor();
-                    }
+                    switch (town[y, x])
+                    { 
+                    case 0:
+                            Console.BackgroundColor = ConsoleColor.Blue;
+                            Console.Write(" ");
+                            Console.ResetColor();
+                            break;
+                    case 2:
+                            Console.BackgroundColor = ConsoleColor.Magenta;
+                            Console.Write(" ");
+                            Console.ResetColor();
+                            break;
+                    case 3:
+                            Console.BackgroundColor = ConsoleColor.Gray;
+                            Console.Write(" ");
+                            Console.ResetColor();
+                            break;
+                    case 4:
+                            Console.BackgroundColor = ConsoleColor.DarkGray;
+                            Console.Write(" ");
+                            Console.ResetColor();
+                            break;
+                    case 5:
+                            Console.BackgroundColor = ConsoleColor.DarkRed;
+                            Console.Write(" ");
+                            Console.ResetColor();
+                            break;
+                    case 9:
+                            Console.BackgroundColor = ConsoleColor.Yellow;
+                            Console.Write(" ");
+                            Console.ResetColor();
+                            break;
+                    case 1:
+                            Console.BackgroundColor = ConsoleColor.DarkGreen;
+                            Console.Write(" ");
+                            Console.ResetColor();
+                            break;
+                    case 6:
+                            Console.Write(" ");
+                            break;
+                    case 7:
+                            Console.BackgroundColor = ConsoleColor.DarkYellow;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.Write("☺");
+                            Console.ResetColor();
+                            break;
+                    case 8:
+                            Console.BackgroundColor = ConsoleColor.Cyan;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.Write("☻");
+                            Console.ResetColor();
+                            break;
+                    };
                 }
                 Console.WriteLine();
             }
@@ -914,72 +881,55 @@ class GameProgram
             {
                 case ConsoleKey.LeftArrow:
                 case ConsoleKey.A:
-                    napr = 1;
+                    if (kolon - 1 >= 8 && town[strok, kolon - 1] != 8)
+                    {
+                        town[strok, kolon] = temp;
+                        temp = town[strok, kolon - 1];
+                        kolon--;
+                        town[strok, kolon] = 7;
+                    }
+                    else if (kolon - 1 >= 8 && town[strok, kolon - 1] == 8) { dialog = true; }
                     break;
                 case ConsoleKey.RightArrow:
                 case ConsoleKey.D:
-                    napr = 2;
+                    if (kolon + 1 < 24 && town[strok, kolon + 1] != 8)
+                    {
+                        town[strok, kolon] = temp;
+                        temp = town[strok, kolon + 1];
+                        kolon++;
+                        town[strok, kolon] = 7;
+                    }
+                    else if (kolon + 1 < 24 && town[strok, kolon + 1] == 8) { dialog = true; }
+                    else if (kolon + 1 >= 24) { bg.Stop(); Loka1(); }
                     break;
                 case ConsoleKey.UpArrow:
                 case ConsoleKey.W:
-                    napr = 3;
+                    if (strok - 1 >= 6 && town[strok - 1, kolon] != 8)
+                    {
+                        town[strok, kolon] = temp;
+                        temp = town[strok - 1, kolon];
+                        strok--;
+                        town[strok, kolon] = 7;
+                    }
+                    else if (strok - 1 >= 6 && town[strok - 1, kolon] == 8) { dialog = true; }
+                    else if (strok - 1 >= 5 && kolon == 13 && town[strok - 1, kolon] == 9) { dialog1 = true; }
                     break;
                 case ConsoleKey.DownArrow:
                 case ConsoleKey.S:
-                    napr = 4;
+                    if (strok + 1 < 9 && town[strok + 1, kolon] != 8)
+                    {
+                        town[strok, kolon] = temp;
+                        temp = town[strok + 1, kolon];
+                        strok++;
+                        town[strok, kolon] = 7;
+                    }
+                    else if (strok + 1 < 9 && town[strok + 1, kolon] == 8) { dialog = true; }
                     break;
-            }
-            if (napr == 1)
-            {
-                if (kolon - 1 >= 8 && town[strok, kolon - 1] != 8)
-                {
-                    town[strok, kolon] = temp;
-                    temp = town[strok, kolon - 1];
-                    kolon--;
-                    town[strok, kolon] = 7;
-                }
-                else if (kolon - 1 >= 8 && town[strok, kolon - 1] == 8) { dialog = true; }
-            }
-            if (napr == 2)
-            {
-                if (kolon + 1 < 24 && town[strok, kolon + 1] != 8)
-                {
-                    town[strok, kolon] = temp;
-                    temp = town[strok, kolon + 1];
-                    kolon++;
-                    town[strok, kolon] = 7;
-                }
-                else if (kolon + 1 < 24 && town[strok, kolon + 1] == 8) { dialog = true; }
-                else if (kolon + 1 >= 24) { bg.Stop(); Loka1(); }
-            }
-            if (napr == 3)
-            {
-                if (strok - 1 >= 6 && town[strok - 1, kolon] != 8)
-                {
-                    town[strok, kolon] = temp;
-                    temp = town[strok - 1, kolon];
-                    strok--;
-                    town[strok, kolon] = 7;
-                }
-                else if (strok - 1 >= 6 && town[strok - 1, kolon] == 8) { dialog = true; }
-                else if (strok - 1 >= 5 && kolon == 13 && town[strok - 1, kolon] == 9) { dialog1 = true; }
-            }
-            if (napr == 4)
-            {
-                if (strok + 1 < 9 && town[strok + 1, kolon] != 8)
-                {
-                    town[strok, kolon] = temp;
-                    temp = town[strok + 1, kolon];
-                    strok++;
-                    town[strok, kolon] = 7;
-                }
-                else if (strok + 1 < 9 && town[strok + 1, kolon] == 8) { dialog = true; }
             }
             if (dialog == true)
             {
                 bool Ex = false;
                 int vibor = 0, buf = 0;
-                napr = 0;
                 Console.WriteLine($"Билет на корабль стоит 1000 монет. У вас есть: {money} монет.");
                 Console.WriteLine("Хотите приобрести?");
                 Console.WriteLine("Да   ^   Нет");
@@ -990,25 +940,16 @@ class GameProgram
                     {
                         case ConsoleKey.LeftArrow:
                         case ConsoleKey.A:
-                            napr = 1;
+                            Console.SetCursorPosition(5, 11);
+                            Console.WriteLine("<");
+                            vibor = 1;
                             break;
                         case ConsoleKey.RightArrow:
                         case ConsoleKey.D:
-                            napr = 2;
+                            Console.SetCursorPosition(5, 11);
+                            Console.WriteLine(">");
+                            vibor = 2;
                             break;
-                    }
-                    if (napr == 1)
-                    {
-                        Console.SetCursorPosition(5, 11);
-                        Console.WriteLine("<");
-                        vibor = 1;
-                    }
-                    else if (napr == 2)
-                    {
-                        Console.SetCursorPosition(5, 11);
-                        Console.WriteLine(">");
-                        vibor = 2;
-
                     }
                     if (vib.Key.ToString() == "Enter" && vibor != 0)
                     {
@@ -1033,7 +974,6 @@ class GameProgram
             {
                 bool Ex = false;
                 int vibor = 0, buf = 0;
-                napr = 0;
                 Console.WriteLine($"Здесь вы можете продать кристаллы, 1 кристалл = 1000 монет. У вас есть: {kristal} кристаллов.");
                 Console.WriteLine("Хотите продать?");
                 Console.WriteLine("Да   ^   Нет");
@@ -1044,25 +984,16 @@ class GameProgram
                     {
                         case ConsoleKey.LeftArrow:
                         case ConsoleKey.A:
-                            napr = 1;
+                            Console.SetCursorPosition(5, 11);
+                            Console.WriteLine("<");
+                            vibor = 1;
                             break;
                         case ConsoleKey.RightArrow:
                         case ConsoleKey.D:
-                            napr = 2;
+                            Console.SetCursorPosition(5, 11);
+                            Console.WriteLine(">");
+                            vibor = 2;
                             break;
-                    }
-                    if (napr == 1)
-                    {
-                        Console.SetCursorPosition(5, 11);
-                        Console.WriteLine("<");
-                        vibor = 1;
-                    }
-                    else if (napr == 2)
-                    {
-                        Console.SetCursorPosition(5, 11);
-                        Console.WriteLine(">");
-                        vibor = 2;
-
                     }
                     if (vib.Key.ToString() == "Enter" && vibor != 0)
                     {
@@ -1089,27 +1020,27 @@ class GameProgram
     static void Rules() 
     {
         Console.Clear();
-        Console.WriteLine("Правила:\r\n" +
-            "Главное правило, не использовать бумагу и корондаш, другие средства записи.\r\n" +
-            "Второе правило, веселитесь!\r\n" +
-            "\r\nУправление:\r\n" +
-            "Передвижение на W, A, S, D или на стрелочки.\r\n" +
+        Console.WriteLine("Правила: \r\n" +
+            "Главное правило, не использовать бумагу и карандаш, другие средства записи. \r\n" +
+            "Второе правило, веселитесь! \r\n" +
+            "\r\n Управление: \r\n" +
+            "Передвижение на W, A, S, D или на стрелочки. \r\n" +
             "Что бы выбрать нужный ответ в диалогах нажмите Enter.\r\n" +
-            "\r\nПредыстория:\r\n" +
-            "Вы являетесь жителем городка на охваченном войной континенте и в скором времени на городок нападут демоны,\r\n" +
+            "\r\n Предыстория: \r\n" +
+            "Вы являетесь жителем городка на охваченном войной континенте и в скором времени на городок нападут демоны, \r\n" +
             "чтобы не стать для них пищей, вы должны уплыть на корабле, однако, вам не хватает денег на билет, да еще и капитан не может продать билет дешевле\r\n" +
-            "так как корабль и так полон людьми, но благо рядом с кораблем есть ювилирная лавка, где можно продать кристаллы.\r\n" +
-            "Однако, и кристаллов у вас нет. Совсем отчаявшись, вы ушли в товерну выпить напоследок, там за кружкой пива вам\r\n" +
-            "рассказали про кристалл, находящийся в лаберинте на востоке, однако, чтобы попасть в лабиринт, вам необходимо пройти\r\n" +
-            "через очень опасный лес, который кишит монстрами, до лабиринта конечно ведет дорога,\r\n" +
-            "но она очень длинная, а ночью из леса выходят еще более опасные монстры. И без\r\n" +
-            "опытного сопровождения ночевать на дороге не представляется возможным. Благо по пути есть деревушка в которой можно переночевать.\r\n" +
-            "Мужчина так же рассказал, что пройдя лабиринт вы встретите систему защиты кристалла,\r\n" +
-            "она представляет собой несколько комнат, в которых нужно ввести пароль нажимая на плиты на полу.\r\n" +
-            "Правда, если вы не правильно введете пароль, все пройденные комнаты закроются,\r\n" +
-            "а вас вернет опять в начало. Именно по этой причине никто еще не забрал кристал.\r\n" +
-            "Ну чтож, вперед на поиски кристалла, дабы сохранить свою жизнь!\r\n" +
-            "\r\nНажмите Enter для выхода...");
+            "так как корабль и так полон людьми, но благо рядом с кораблем есть ювелирная лавка, где можно продать кристаллы. \r\n" +
+            "Однако, и кристаллов у вас нет. Совсем отчаявшись, вы ушли в таверну выпить напоследок, там за кружкой пива вам\r\n" +
+            "рассказали про кристалл, находящийся в лабиринте на востоке, однако, чтобы попасть в лабиринт, вам необходимо пройти\r\n" +
+            "через очень опасный лес, который кишит монстрами, до лабиринта конечно ведет дорога, \r\n" +
+            "но она очень длинная, а ночью из леса выходят еще более опасные монстры. И без \r\n" +
+            "опытного сопровождения ночевать на дороге не представляется возможным. Благо по пути есть деревушка, в которой можно переночевать. \r\n" +
+            "Мужчина так же рассказал, что, пройдя лабиринт вы встретите систему защиты кристалла, \r\n" +
+            "она представляет собой несколько комнат, в которых нужно ввести пароль нажимая на плиты на полу. \r\n" +
+            "Правда, если вы неправильно введете пароль, все пройденные комнаты закроются, \r\n" +
+            "а вас вернет опять в начало. Именно по этой причине никто еще не забрал кристалл. \r\n" +
+            "Ну что-ж, вперед на поиски кристалла, дабы сохранить свою жизнь! \r\n" +
+            "\r\n Нажмите Enter для выхода...");
         Console.ReadKey(true);
         Menu(); 
     }
